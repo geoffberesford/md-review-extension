@@ -550,6 +550,22 @@ var InlineComments = (() => {
   }
 
   /* ---------------------------------------------------------------- */
+  /*  Line mapping helpers                                             */
+  /* ---------------------------------------------------------------- */
+
+  function _findNearestPrecedingLine(sortedLines, target) {
+    let best = null;
+    for (const line of sortedLines) {
+      if (line <= target) {
+        best = line;
+      } else {
+        break;
+      }
+    }
+    return best;
+  }
+
+  /* ---------------------------------------------------------------- */
   /*  Cache invalidation                                               */
   /* ---------------------------------------------------------------- */
 
@@ -614,13 +630,23 @@ var InlineComments = (() => {
         blockByLine.set(blockLine, block);
       }
     }
-    console.log("[MD Review InlineComments] Mapped", blockByLine.size, "DOM blocks to line numbers:", [...blockByLine.keys()].sort((a, b) => a - b).join(", "));
+    const sortedMappedLines = [...blockByLine.keys()].sort((a, b) => a - b);
+    console.log("[MD Review InlineComments] Mapped", blockByLine.size, "DOM blocks to line numbers:", sortedMappedLines.join(", "));
 
     let anchored = 0;
     for (const thread of threads) {
-      const anchorBlock = blockByLine.get(thread.line);
+      let anchorBlock = blockByLine.get(thread.line);
+
       if (!anchorBlock) {
-        console.warn("[MD Review InlineComments] No DOM anchor for thread on line", thread.line, "— available lines:", [...blockByLine.keys()].sort((a, b) => a - b).join(", "));
+        const nearest = _findNearestPrecedingLine(sortedMappedLines, thread.line);
+        if (nearest !== null) {
+          anchorBlock = blockByLine.get(nearest);
+          console.log("[MD Review InlineComments] Thread on line", thread.line, "→ anchored to nearest block at line", nearest);
+        }
+      }
+
+      if (!anchorBlock) {
+        console.warn("[MD Review InlineComments] No DOM anchor for thread on line", thread.line, "— available lines:", sortedMappedLines.join(", "));
         continue;
       }
 
