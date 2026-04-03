@@ -23,9 +23,12 @@ const zipName = `markdown-rich-review-${version}.zip`;
 const INCLUDE = [
   "manifest.json",
   "content-script.js",
+  "inline-comments.js",
   "utils/",
   "styles/",
   "icons/",
+  "background/",
+  "popup/",
   "LICENSE",
 ];
 

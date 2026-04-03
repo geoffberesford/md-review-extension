@@ -288,3 +288,342 @@ td.md-review-selected-line,
 a.md-review-selected-line {
   background: var(--diffBlob-selectedLine-bgColor, #fff8c5) !important;
 }
+
+/* ============================================================
+   Inline Comment Threads (inline-comments.js)
+   ============================================================ */
+
+/* ---------- Thread container ---------- */
+
+.mdr-inline-thread {
+  position: relative;
+  margin: 8px 0;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  background: #ffffff;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #1f2328;
+  cursor: default;
+}
+
+[data-color-mode="dark"] .mdr-inline-thread,
+.dark .mdr-inline-thread {
+  background: #161b22;
+  border-color: #30363d;
+  color: #e6edf3;
+}
+
+.mdr-inline-thread__toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  border-bottom: 1px solid #d0d7de;
+  border-radius: 6px 6px 0 0;
+  background: #f6f8fa;
+  color: #656d76;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: left;
+}
+
+.mdr-inline-thread__toggle:hover {
+  background: #eaeef2;
+}
+
+[data-color-mode="dark"] .mdr-inline-thread__toggle,
+.dark .mdr-inline-thread__toggle {
+  background: #21262d;
+  border-color: #30363d;
+  color: #8b949e;
+}
+
+[data-color-mode="dark"] .mdr-inline-thread__toggle:hover,
+.dark .mdr-inline-thread__toggle:hover {
+  background: #30363d;
+}
+
+.mdr-inline-thread__toggle svg {
+  flex-shrink: 0;
+}
+
+.mdr-inline-thread__body {
+  padding: 0;
+}
+
+.mdr-inline-thread--collapsed .mdr-inline-thread__body {
+  display: none;
+}
+
+.mdr-inline-thread--collapsed .mdr-inline-thread__toggle {
+  border-bottom: none;
+  border-radius: 6px;
+}
+
+/* ---------- Individual comment ---------- */
+
+.mdr-comment {
+  padding: 10px 12px;
+  border-bottom: 1px solid #d8dee4;
+}
+
+.mdr-comment:last-of-type {
+  border-bottom: none;
+}
+
+[data-color-mode="dark"] .mdr-comment,
+.dark .mdr-comment {
+  border-color: #30363d;
+}
+
+.mdr-comment__header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.mdr-comment__avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.mdr-comment__author {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1f2328;
+  text-decoration: none;
+}
+
+.mdr-comment__author:hover {
+  text-decoration: underline;
+  color: #0969da;
+}
+
+[data-color-mode="dark"] .mdr-comment__author,
+.dark .mdr-comment__author {
+  color: #e6edf3;
+}
+
+[data-color-mode="dark"] .mdr-comment__author:hover,
+.dark .mdr-comment__author:hover {
+  color: #58a6ff;
+}
+
+.mdr-comment__time {
+  font-size: 12px;
+  color: #656d76;
+}
+
+[data-color-mode="dark"] .mdr-comment__time,
+.dark .mdr-comment__time {
+  color: #8b949e;
+}
+
+.mdr-comment__body {
+  font-size: 13px;
+  line-height: 1.5;
+  word-wrap: break-word;
+}
+
+.mdr-comment__body code {
+  display: block;
+  padding: 2px 6px;
+  margin: 2px 0;
+  background: #f6f8fa;
+  border-radius: 3px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+  font-size: 12px;
+}
+
+[data-color-mode="dark"] .mdr-comment__body code,
+.dark .mdr-comment__body code {
+  background: #21262d;
+}
+
+/* ---------- Comment form (reply + new) ---------- */
+
+.mdr-comment-form {
+  padding: 8px 12px;
+  border-top: 1px solid #d8dee4;
+}
+
+[data-color-mode="dark"] .mdr-comment-form,
+.dark .mdr-comment-form {
+  border-color: #30363d;
+}
+
+.mdr-comment-form__textarea {
+  display: block;
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 8px;
+  border: 1px solid #d0d7de;
+  border-radius: 6px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: vertical;
+  background: #ffffff;
+  color: #1f2328;
+}
+
+.mdr-comment-form__textarea:focus {
+  outline: none;
+  border-color: #0969da;
+  box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
+}
+
+[data-color-mode="dark"] .mdr-comment-form__textarea,
+.dark .mdr-comment-form__textarea {
+  background: #0d1117;
+  border-color: #30363d;
+  color: #e6edf3;
+}
+
+[data-color-mode="dark"] .mdr-comment-form__textarea:focus,
+.dark .mdr-comment-form__textarea:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.4);
+}
+
+.mdr-comment-form__actions {
+  display: none;
+  gap: 6px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+.mdr-comment-form--active .mdr-comment-form__actions {
+  display: flex;
+}
+
+/* New comment form (appears below a block, not inside a thread) */
+.mdr-new-comment-form {
+  margin: 8px 0;
+  padding: 10px 12px;
+  border: 1px solid #54aeff;
+  border-radius: 6px;
+  background: #ffffff;
+}
+
+[data-color-mode="dark"] .mdr-new-comment-form,
+.dark .mdr-new-comment-form {
+  background: #161b22;
+  border-color: #1f6feb;
+}
+
+.mdr-new-comment-form .mdr-comment-form__actions {
+  display: flex;
+}
+
+/* ---------- Buttons ---------- */
+
+.mdr-btn {
+  padding: 5px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid transparent;
+  line-height: 1.5;
+}
+
+.mdr-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mdr-btn--primary {
+  background: #1f883d;
+  color: #ffffff;
+  border-color: rgba(27, 31, 36, 0.15);
+}
+
+.mdr-btn--primary:hover:not(:disabled) {
+  background: #1a7f37;
+}
+
+[data-color-mode="dark"] .mdr-btn--primary,
+.dark .mdr-btn--primary {
+  background: #238636;
+  border-color: rgba(240, 246, 252, 0.1);
+}
+
+[data-color-mode="dark"] .mdr-btn--primary:hover:not(:disabled),
+.dark .mdr-btn--primary:hover:not(:disabled) {
+  background: #2ea043;
+}
+
+.mdr-btn--secondary {
+  background: #f6f8fa;
+  color: #1f2328;
+  border-color: #d0d7de;
+}
+
+.mdr-btn--secondary:hover:not(:disabled) {
+  background: #eaeef2;
+}
+
+[data-color-mode="dark"] .mdr-btn--secondary,
+.dark .mdr-btn--secondary {
+  background: #21262d;
+  color: #e6edf3;
+  border-color: #30363d;
+}
+
+[data-color-mode="dark"] .mdr-btn--secondary:hover:not(:disabled),
+.dark .mdr-btn--secondary:hover:not(:disabled) {
+  background: #30363d;
+}
+
+/* ---------- Hover bubble ---------- */
+
+.mdr-add-comment-bubble {
+  position: absolute;
+  left: -36px;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid #d0d7de;
+  border-radius: 50%;
+  background: #ffffff;
+  color: #0969da;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  padding: 0;
+}
+
+.mdr-add-comment-bubble:hover {
+  background: #ddf4ff;
+  border-color: #54aeff;
+  transform: scale(1.1);
+}
+
+[data-color-mode="dark"] .mdr-add-comment-bubble,
+.dark .mdr-add-comment-bubble {
+  background: #21262d;
+  border-color: #30363d;
+  color: #58a6ff;
+}
+
+[data-color-mode="dark"] .mdr-add-comment-bubble:hover,
+.dark .mdr-add-comment-bubble:hover {
+  background: #0c2d6b;
+  border-color: #1f6feb;
+}
+
+.mdr-add-comment-bubble svg {
+  flex-shrink: 0;
+}

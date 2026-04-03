@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MD Review Settings</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <h1>MD Review</h1>
+    <p class="subtitle">Inline comments on GitHub rich diffs</p>
+
+    <label for="pat-input">GitHub Personal Access Token</label>
+    <div class="input-row">
+      <input type="password" id="pat-input" placeholder="ghp_..." autocomplete="off" spellcheck="false" />
+      <button id="toggle-visibility" type="button" title="Show/hide token">&#x1f441;</button>
+    </div>
+    <p class="hint">Needs <code>repo</code> scope for private repos, or <code>public_repo</code> for public only.</p>
+
+    <div class="actions">
+      <button id="save-btn" class="primary">Save</button>
+      <button id="test-btn" class="secondary">Test Connection</button>
+    </div>
+
+    <div id="status" class="status" hidden></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

@@ -355,7 +355,7 @@
   }
 
   function _isMarkdownPath(path) {
-    return typeof path === "string" && /\.md$/i.test(path.trim());
+    return typeof path === "string" && /\.mdc?$/i.test(path.trim());
   }
 
   function _normalizeRepoPath(path) {
@@ -959,6 +959,19 @@
       _addCommentBadges(article, markersMap, pathDigest);
       _decorateCommentedBlocks(article, markersMap, lineMap, pathDigest);
       _decorateSourceCommentLines(container, markersMap, pathDigest);
+
+      const headOid = _getHeadOid();
+      if (typeof InlineComments !== "undefined") {
+        const refreshAll = () => {
+          _refreshCommentIndicators(container, markersMap, pathDigest);
+          InlineComments.enhanceArticle(
+            article, container, lineMap, filePath, pathDigest, headOid, refreshAll
+          );
+        };
+        InlineComments.enhanceArticle(
+          article, container, lineMap, filePath, pathDigest, headOid, refreshAll
+        );
+      }
     }
 
     // Retry until article appears
@@ -1075,10 +1088,16 @@
       // Don't do anything if extension is paused
       if (!_isExtensionEnabled()) return;
 
-      // Don't intercept clicks on actual links or comment badges
+      // Don't intercept clicks on links, comment badges, or inline comment UI
       if (e.target.closest("a[href]:not(.md-review-code-link)")) return;
       if (e.target.closest(`.${BADGE_CLASS}`)) return;
       if (e.target.closest(".md-review-comment-bar")) return;
+      if (typeof InlineComments !== "undefined") {
+        if (e.target.closest(`.${InlineComments.THREAD_CLASS}`)) return;
+        if (e.target.closest(`.${InlineComments.FORM_CLASS}`)) return;
+        if (e.target.closest(`.${InlineComments.BUBBLE_CLASS}`)) return;
+        if (e.target.closest(".mdr-new-comment-form")) return;
+      }
 
       e.preventDefault();
       e.stopPropagation();
@@ -1450,6 +1469,9 @@
     }
 
     // 1. Remove all injected DOM elements first
+    if (typeof InlineComments !== "undefined") {
+      InlineComments.removeAllInlineComments();
+    }
     qsa(".md-review-margin-badge").forEach(el => el.remove());
     qsa(".md-review-comment-bar").forEach(el => el.remove());
     qsa(`.${BACK_TO_RICH_BTN_CLASS}`).forEach(el => el.remove());
