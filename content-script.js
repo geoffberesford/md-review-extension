@@ -92,6 +92,18 @@
   const _localCommentActivityByDigest = new Map();
   const _suppressedCommentLinesByDigest = new Map();
   let _commentActivityTrackingInstalled = false;
+
+  let _clickToCommentMode = false;
+  try {
+    chrome.storage.sync.get("click_to_comment", (result) => {
+      _clickToCommentMode = result.click_to_comment === true;
+    });
+    chrome.storage.onChanged.addListener((changes) => {
+      if (changes.click_to_comment) {
+        _clickToCommentMode = changes.click_to_comment.newValue === true;
+      }
+    });
+  } catch { /* storage unavailable — keep default */ }
   const FILE_FETCH_RETRY_MS = 60 * 1000;
   const LOCAL_COMMENT_ACTIVITY_TTL_MS = 3 * 60 * 1000;
   const LOCAL_EDITOR_ACTIVITY_TTL_MS = 10 * 60 * 1000;
@@ -1144,7 +1156,27 @@
 
       console.log("[MD Review] Resolved lineNum:", lineNum);
 
-      // Switch to source diff by clicking the segmented control button
+      if (_clickToCommentMode && lineNum && typeof InlineComments !== "undefined") {
+        const fileContainer = article.closest("div[id^='diff-']");
+        const filePath = fileContainer ? _normalizeRepoPath(
+          _getDiffSummaries().find(s => s.pathDigest === pathDigest)?.path ||
+          _getContainerFilePath(fileContainer)
+        ) : "";
+        const commitId = _getHeadOid();
+
+        if (filePath && commitId) {
+          const prMatch = window.location.pathname.match(/^\/([^/]+)\/([^/]+)\/pull\/(\d+)/);
+          if (prMatch) {
+            const prInfo = { owner: prMatch[1], repo: prMatch[2], pullNumber: parseInt(prMatch[3], 10) };
+            InlineComments.createNewCommentForm(
+              prInfo, filePath, commitId, lineNum, blockTarget,
+              () => _refreshCommentIndicators(fileContainer, markersMap, pathDigest)
+            );
+            return;
+          }
+        }
+      }
+
       const fileContainer = article.closest("div[id^='diff-']");
       if (fileContainer) {
         _switchToSourceAndFocus(fileContainer, pathDigest, lineNum, markersMap);

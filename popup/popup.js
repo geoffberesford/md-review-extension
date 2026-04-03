@@ -17,10 +17,17 @@
     statusEl.hidden = true;
   }
 
-  chrome.storage.sync.get("github_pat", (result) => {
+  const clickToCommentCheckbox = document.getElementById("click-to-comment");
+
+  chrome.storage.sync.get(["github_pat", "click_to_comment"], (result) => {
     if (result.github_pat) {
       patInput.value = result.github_pat;
     }
+    clickToCommentCheckbox.checked = result.click_to_comment === true;
+  });
+
+  clickToCommentCheckbox.addEventListener("change", () => {
+    chrome.storage.sync.set({ click_to_comment: clickToCommentCheckbox.checked });
   });
 
   toggleBtn.addEventListener("click", () => {
